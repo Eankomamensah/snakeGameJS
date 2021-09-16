@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <canvas id="gameCanvas"  width="400" height="400">
+        </canvas>
+        <script>
+    window.onload=function() {
+    canv=document.getElementById("gameCanvas");
+    ctx=canv.getContext("2d");
+    document.addEventListener("keydown",keyPush);
+    setInterval(game,1000/15);
+    }
+    headx=heady=10;
+    gridsize=tilecount=20;
+    foodx=foody=15;
+    xdir=ydir=0;
+    trail=[];
+    tail = 5;
+    function game() {
+    headx+=xdir;
+    heady+=ydir;
+
+    //wrapping snake across borders
+    if(headx<0) {
+        headx= tilecount-1;
+    }
+    if(headx>tilecount-1) {
+        headx= 0;
+    }
+    if(heady<0) {
+        heady= tilecount-1;
+    }
+    if(heady>tilecount-1) {
+        heady= 0;
+    }
+
+    //snake and background design
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,canv.width,canv.height);
+    ctx.fillStyle="green";
+
+    //snake trail
+    for(var i=0;i<trail.length;i++) {
+        ctx.fillRect(trail[i].x*gridsize,trail[i].y*gridsize,gridsize-2,gridsize-2);
+        if(trail[i].x==headx && trail[i].y==heady) {
+            tail = 5;
+        }
+    }
+    trail.push({x:headx,y:heady});
+    while(trail.length>tail) {
+    trail.shift();
+    }
+    //when the player consumes food and increases their length
+    
+    if(foodx==headx && foody==heady) {
+        tail++;
+        foodx=Math.floor(Math.random()*tilecount);
+        foody=Math.floor(Math.random()*tilecount);
+    }
+    ctx.fillStyle="yellow";
+    ctx.fillRect(foodx*gridsize,foody*gridsize,gridsize-2,gridsize-2);
+    }
+    //user inpput direction
+    function keyPush(evt) {
+        switch(evt.keyCode) {
+            case 37:
+                xdir=-1;ydir=0;
+                break;
+            case 38:
+                xdir=0;ydir=-1;
+                break;
+            case 39:
+                xdir=1;ydir=0;
+                break;
+            case 40:
+                xdir=0;ydir=1;
+                break;
+            }
+    }
+        </script>
+    </body>
+</html>
